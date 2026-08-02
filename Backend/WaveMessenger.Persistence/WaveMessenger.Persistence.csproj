@@ -1,0 +1,14 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\WaveMessenger.Application\WaveMessenger.Application.csproj" />
+    <ProjectReference Include="..\WaveMessenger.Domain\WaveMessenger.Domain.csproj" />
+  </ItemGroup>
+
+</Project>

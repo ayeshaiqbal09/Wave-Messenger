@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="WaveMessenger.Api/WaveMessenger.Api.csproj" />
+  <Project Path="WaveMessenger.Application/WaveMessenger.Application.csproj" />
+  <Project Path="WaveMessenger.Domain/WaveMessenger.Domain.csproj" />
+  <Project Path="WaveMessenger.Infrastructure/WaveMessenger.Infrastructure.csproj" />
+  <Project Path="WaveMessenger.Persistence/WaveMessenger.Persistence.csproj" />
+</Solution>

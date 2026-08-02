@@ -1,0 +1,6 @@
+@WaveMessenger.Api_HostAddress = http://localhost:5189
+
+GET {{WaveMessenger.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
