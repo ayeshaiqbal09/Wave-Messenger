@@ -1,0 +1,16 @@
+C:\Users\Ayesha\source\repos\WaveMessenger\Backend\WaveMessenger.Application\bin\Debug\net10.0\WaveMessenger.Application.deps.json
+C:\Users\Ayesha\source\repos\WaveMessenger\Backend\WaveMessenger.Application\bin\Debug\net10.0\WaveMessenger.Application.dll
+C:\Users\Ayesha\source\repos\WaveMessenger\Backend\WaveMessenger.Application\bin\Debug\net10.0\WaveMessenger.Application.pdb
+C:\Users\Ayesha\source\repos\WaveMessenger\Backend\WaveMessenger.Application\bin\Debug\net10.0\WaveMessenger.Domain.dll
+C:\Users\Ayesha\source\repos\WaveMessenger\Backend\WaveMessenger.Application\bin\Debug\net10.0\WaveMessenger.Domain.pdb
+C:\Users\Ayesha\source\repos\WaveMessenger\Backend\WaveMessenger.Application\obj\Debug\net10.0\WaveMessenger.Application.csproj.AssemblyReference.cache
+C:\Users\Ayesha\source\repos\WaveMessenger\Backend\WaveMessenger.Application\obj\Debug\net10.0\WaveMessenger.Application.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Ayesha\source\repos\WaveMessenger\Backend\WaveMessenger.Application\obj\Debug\net10.0\WaveMessenger.Application.AssemblyInfoInputs.cache
+C:\Users\Ayesha\source\repos\WaveMessenger\Backend\WaveMessenger.Application\obj\Debug\net10.0\WaveMessenger.Application.AssemblyInfo.cs
+C:\Users\Ayesha\source\repos\WaveMessenger\Backend\WaveMessenger.Application\obj\Debug\net10.0\WaveMessenger.Application.csproj.CoreCompileInputs.cache
+C:\Users\Ayesha\source\repos\WaveMessenger\Backend\WaveMessenger.Application\obj\Debug\net10.0\WaveMessenger.Application.sourcelink.json
+C:\Users\Ayesha\source\repos\WaveMessenger\Backend\WaveMessenger.Application\obj\Debug\net10.0\WaveMess.9F8B90F1.Up2Date
+C:\Users\Ayesha\source\repos\WaveMessenger\Backend\WaveMessenger.Application\obj\Debug\net10.0\WaveMessenger.Application.dll
+C:\Users\Ayesha\source\repos\WaveMessenger\Backend\WaveMessenger.Application\obj\Debug\net10.0\refint\WaveMessenger.Application.dll
+C:\Users\Ayesha\source\repos\WaveMessenger\Backend\WaveMessenger.Application\obj\Debug\net10.0\WaveMessenger.Application.pdb
+C:\Users\Ayesha\source\repos\WaveMessenger\Backend\WaveMessenger.Application\obj\Debug\net10.0\ref\WaveMessenger.Application.dll

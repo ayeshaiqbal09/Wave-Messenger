@@ -8,10 +8,16 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.8" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="10.0.10">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\WaveMessenger.Application\WaveMessenger.Application.csproj" />
+    <ProjectReference Include="..\WaveMessenger.Domain\WaveMessenger.Domain.csproj" />
+    <ProjectReference Include="..\WaveMessenger.Persistence\WaveMessenger.Persistence.csproj" />
   </ItemGroup>
 
 </Project>
