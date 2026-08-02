@@ -127,3 +127,7 @@ C:\Users\Ayesha\source\repos\WaveMessenger\Backend\WaveMessenger.Api\obj\Debug\n
 C:\Users\Ayesha\source\repos\WaveMessenger\Backend\WaveMessenger.Api\obj\Debug\net10.0\WaveMessenger.Api.pdb
 C:\Users\Ayesha\source\repos\WaveMessenger\Backend\WaveMessenger.Api\obj\Debug\net10.0\WaveMessenger.Api.genruntimeconfig.cache
 C:\Users\Ayesha\source\repos\WaveMessenger\Backend\WaveMessenger.Api\obj\Debug\net10.0\ref\WaveMessenger.Api.dll
+C:\Users\Ayesha\source\repos\WaveMessenger\Backend\WaveMessenger.Api\bin\Debug\net10.0\Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll
+C:\Users\Ayesha\source\repos\WaveMessenger\Backend\WaveMessenger.Api\bin\Debug\net10.0\Swashbuckle.AspNetCore.Swagger.dll
+C:\Users\Ayesha\source\repos\WaveMessenger\Backend\WaveMessenger.Api\bin\Debug\net10.0\Swashbuckle.AspNetCore.SwaggerGen.dll
+C:\Users\Ayesha\source\repos\WaveMessenger\Backend\WaveMessenger.Api\bin\Debug\net10.0\Swashbuckle.AspNetCore.SwaggerUI.dll

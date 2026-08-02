@@ -1,4 +1,4 @@
-namespace WaveMessenger.Contracts.Auth;
+namespace WaveMessenger.Application.Contracts.Auth;
 
 public class LoginRequest
 {
