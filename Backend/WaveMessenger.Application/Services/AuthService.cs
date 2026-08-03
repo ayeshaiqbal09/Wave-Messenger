@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using WaveMessenger.Application.Contracts.Auth;
+using WaveMessenger.Application.Exceptions;
 using WaveMessenger.Application.Interfaces;
 using WaveMessenger.Domain.Entities;
 
@@ -9,13 +10,16 @@ public class AuthService : IAuthService
 {
     private readonly IUserRepository _userRepository;
     private readonly IPasswordHasher<User> _passwordHasher;
+    private readonly ITokenGenerator _jwtTokenGenerator;
 
     public AuthService(
         IUserRepository userRepository,
-        IPasswordHasher<User> passwordHasher)
+        IPasswordHasher<User> passwordHasher,
+        ITokenGenerator jwtTokenGenerator)
     {
         _userRepository = userRepository;
         _passwordHasher = passwordHasher;
+        _jwtTokenGenerator = jwtTokenGenerator;
     }
 
     public async Task<RegisterResponse?> RegisterAsync(RegisterRequest request)
@@ -23,7 +27,7 @@ public class AuthService : IAuthService
         var existingUser = await _userRepository.GetByEmailAsync(request.Email);
         if (existingUser != null)
         {
-            throw new Exception("Email is already registered.");
+            throw new ConflictException("Email is already registered.");
         }
 
         var existingUserName =
@@ -31,7 +35,7 @@ public class AuthService : IAuthService
 
         if (existingUserName != null)
         {
-            throw new Exception("Username is already taken.");
+            throw new ConflictException("Username is already taken.");
         }
 
         var user = new User
@@ -62,6 +66,29 @@ public class AuthService : IAuthService
 
     public async Task<LoginResponse?> LoginAsync(LoginRequest request)
     {
-        throw new NotImplementedException();
+        var user = await _userRepository.GetByEmailAsync(request.Email);
+        if (user == null)
+        {
+            throw new UnauthorizedException("Invalid email or password.");
+        }
+
+        var passwordVerificationResult = _passwordHasher.VerifyHashedPassword(
+            user,
+            user.PasswordHash,
+            request.Password);
+
+        if (passwordVerificationResult != PasswordVerificationResult.Success)
+        {
+            throw new UnauthorizedException("Invalid email or password.");
+        }
+        
+        return new LoginResponse
+        {
+            Id = user.Id,
+            UserName = user.UserName,
+            Email = user.Email,
+            DisplayName = user.DisplayName,
+            Token = _jwtTokenGenerator.GenerateToken(user)
+        };
     }
 }

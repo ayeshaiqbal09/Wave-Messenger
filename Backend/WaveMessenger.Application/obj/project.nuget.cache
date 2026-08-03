@@ -1,9 +1,12 @@
 {
   "version": 2,
-  "dgSpecHash": "XosLB8zD/ZU=",
+  "dgSpecHash": "Dt5rfX9xWlo=",
   "success": true,
   "projectFilePath": "C:\\Users\\Ayesha\\source\\repos\\WaveMessenger\\Backend\\WaveMessenger.Application\\WaveMessenger.Application.csproj",
   "expectedPackageFiles": [
+    "C:\\Users\\Ayesha\\.nuget\\packages\\fluentvalidation\\11.11.0\\fluentvalidation.11.11.0.nupkg.sha512",
+    "C:\\Users\\Ayesha\\.nuget\\packages\\fluentvalidation.aspnetcore\\11.3.1\\fluentvalidation.aspnetcore.11.3.1.nupkg.sha512",
+    "C:\\Users\\Ayesha\\.nuget\\packages\\fluentvalidation.dependencyinjectionextensions\\11.11.0\\fluentvalidation.dependencyinjectionextensions.11.11.0.nupkg.sha512",
     "C:\\Users\\Ayesha\\.nuget\\packages\\microsoft.aspnetcore.cryptography.internal\\10.0.0\\microsoft.aspnetcore.cryptography.internal.10.0.0.nupkg.sha512",
     "C:\\Users\\Ayesha\\.nuget\\packages\\microsoft.aspnetcore.cryptography.keyderivation\\10.0.0\\microsoft.aspnetcore.cryptography.keyderivation.10.0.0.nupkg.sha512",
     "C:\\Users\\Ayesha\\.nuget\\packages\\microsoft.aspnetcore.identity.entityframeworkcore\\10.0.0\\microsoft.aspnetcore.identity.entityframeworkcore.10.0.0.nupkg.sha512",
