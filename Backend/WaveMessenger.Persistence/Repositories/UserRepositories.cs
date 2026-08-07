@@ -33,4 +33,13 @@ namespace WaveMessenger.Persistence.Repositories;
         {
             await _context.SaveChangesAsync();
         }
+        public async Task<User?> GetByIdAsync(Guid id)
+        {
+            return await _context.Users.FindAsync(id);
+        }
+
+        public void Update(User user)
+        {
+            _context.Users.Update(user);
+        }
     }

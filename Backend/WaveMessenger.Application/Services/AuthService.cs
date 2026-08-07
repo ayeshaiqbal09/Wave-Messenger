@@ -88,7 +88,8 @@ public class AuthService : IAuthService
             UserName = user.UserName,
             Email = user.Email,
             DisplayName = user.DisplayName,
-            Token = _jwtTokenGenerator.GenerateToken(user)
+            Token = _jwtTokenGenerator.GenerateToken(user),
+            HasCompletedProfile = user.HasCompletedProfile
         };
     }
 }

@@ -30,21 +30,6 @@ public class AuthController : ControllerBase
         return Ok(response);
     }
 
-    [Authorize]
-    [HttpGet("me")]
-    public IActionResult Me()
-    {
-        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-
-        var userName = User.FindFirst(ClaimTypes.Name)?.Value;
-
-        var email = User.FindFirst(ClaimTypes.Email)?.Value;
-
-        return Ok(new
-        {
-            UserId = userId,
-            UserName = userName,
-            Email = email
-        });
-    }
+    
+    
 }

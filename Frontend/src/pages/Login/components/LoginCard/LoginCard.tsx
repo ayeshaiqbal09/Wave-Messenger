@@ -4,13 +4,20 @@ import Card from "../../../../components/ui/Card/Card";
 import Input from "../../../../components/ui/Input";
 import Button from "../../../../components/ui/Button";
 import { ShieldCheck } from "lucide-react";
+import { login as loginUser } from "../../../../services/authService";
+import axios from "axios";
+import { useAuth } from "../../../../hooks/useAuth";
+import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
+
 function LoginCard() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
-    
-    function handleLogin() {
+    const { login } = useAuth();
+    const navigate = useNavigate();
+    async function handleLogin() {
         if(!email)
         {
             setError("Please enter your email");
@@ -23,37 +30,73 @@ function LoginCard() {
         }
         setError("");
         setLoading(true);
-        setTimeout(() => {
-            console.log(email);
-            console.log(password);
+        
+
+        try {
+            const response = await loginUser({
+                email,
+                password
+            });
+            
+
+            login(response.token);
+            
+            if (!response.hasCompletedProfile) {
+                navigate("/complete-profile");
+            }
+            else {
+                navigate("/chat");
+            }
+            console.log("Navigating to chat...");
+            
+
+            console.log(response);
+            
             setLoading(false);
-        }, 2000);
+        }
+        catch (error) {
+
+            if (axios.isAxiosError(error)) {
+
+                console.log(error.response);
+                console.log(error.response?.data);
+
+                setError(error.response?.data?.message ?? "Login failed.");
+
+            } else {
+
+                setError("Something went wrong.");
+
+            }
+
+            setLoading(false);
+        }
             
         
     
-}
+    }
     return (
         <div className="animate-[fadeIn_0.7s_ease] w-full px-6 sm:px-0">
-        <Card className="mx-auto w-full max-w-sm">
-    <div className="lg:hidden">
-        <Logo showTagline />
-    </div>
-    <div className="hidden lg:block">
-        <div className="mb-5 flex items-center gap-2">
-    <ShieldCheck size={32} className="text-blue-600" />
-    <span className="text-xs font-semibold uppercase tracking-wider text-blue-600">
-        Secure Login
-    </span>
-</div>
-    </div>
-     <h2 className="mt-8 text-2xl font-bold text-slate-600">
-        Welcome Back
-    </h2>
-    <p className="mt-2 text-slate-500">
-    Sign in to continue to your account.
-</p>
+            <Card className="mx-auto w-full max-w-sm">
+                <div className="lg:hidden">
+                    <Logo showTagline />
+                </div>
+                <div className="hidden lg:block">
+                    <div className="mb-5 flex items-center gap-2">
+                <ShieldCheck size={32} className="text-blue-600" />
+                <span className="text-xs font-semibold uppercase tracking-wider text-blue-600">
+                    Secure Login
+                </span>
+                </div>
+        </div>
+        <h2 className="mt-8 text-2xl font-bold text-slate-600">
+            Welcome Back
+        </h2>
+        <p className="mt-2 text-slate-500">
+        Sign in to continue to your account.
+        </p>
 
-   <div className="mt-10 w-full">
+    <div className="mt-10 w-full">
 
                 <Input
                     label="Email"
@@ -96,7 +139,7 @@ function LoginCard() {
                     text={loading ? "Logging in..." : "Login"}
                     onClick={handleLogin}
                     type="submit"
-                    disabled={loading ? true : false}
+                    disabled={loading}
                     loading={loading}
                 />
                 {/* Error */}
@@ -129,11 +172,12 @@ function LoginCard() {
 
                 Don't have an account?
 
-                <button
+                <Link
+                    to="/register"
                     className="font-semibold text-blue-600 hover:text-blue-700"
                 >
                     Create Account
-                </button>
+                </Link>
 
             </div>
 

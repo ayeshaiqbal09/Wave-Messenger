@@ -6,11 +6,15 @@ public class User
 
     public string UserName { get; set; } = string.Empty;
 
-    public string DisplayName { get; set; } = string.Empty;
-
     public string Email { get; set; } = string.Empty;
 
+    public string DisplayName { get; set; } = string.Empty;
+
     public string PasswordHash { get; set; } = string.Empty;
+
+    public string? Bio { get; set; }
+
+    public string? Status { get; set; }
 
     public string? ProfilePictureUrl { get; set; }
 
@@ -19,4 +23,6 @@ public class User
     public DateTime LastSeen { get; set; }
 
     public DateTime CreatedAt { get; set; }
+
+    public bool HasCompletedProfile { get; set; } = false;
 }

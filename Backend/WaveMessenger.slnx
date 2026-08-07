@@ -4,4 +4,5 @@
   <Project Path="WaveMessenger.Domain/WaveMessenger.Domain.csproj" />
   <Project Path="WaveMessenger.Infrastructure/WaveMessenger.Infrastructure.csproj" />
   <Project Path="WaveMessenger.Persistence/WaveMessenger.Persistence.csproj" />
+  <Project Path="WaveMessenger.Tests/WaveMessenger.Tests.csproj" />
 </Solution>
