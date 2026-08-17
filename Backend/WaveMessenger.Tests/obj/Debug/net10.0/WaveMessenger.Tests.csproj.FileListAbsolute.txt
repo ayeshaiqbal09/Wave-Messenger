@@ -108,3 +108,5 @@ c:\Users\Ayesha\source\repos\WaveMessenger\Backend\WaveMessenger.Tests\obj\Debug
 c:\Users\Ayesha\source\repos\WaveMessenger\Backend\WaveMessenger.Tests\obj\Debug\net10.0\WaveMessenger.Tests.pdb
 c:\Users\Ayesha\source\repos\WaveMessenger\Backend\WaveMessenger.Tests\obj\Debug\net10.0\WaveMessenger.Tests.genruntimeconfig.cache
 c:\Users\Ayesha\source\repos\WaveMessenger\Backend\WaveMessenger.Tests\obj\Debug\net10.0\ref\WaveMessenger.Tests.dll
+C:\Users\Ayesha\source\repos\WaveMessenger\Backend\WaveMessenger.Tests\bin\Debug\net10.0\Castle.Core.dll
+C:\Users\Ayesha\source\repos\WaveMessenger\Backend\WaveMessenger.Tests\bin\Debug\net10.0\Moq.dll

@@ -56,7 +56,7 @@ function ProfileCard({ onboarding=false }: ProfileCardProps) {
     }
     async function handleSkip() {
 
-    await handleSave();
+    navigate("/chat");
 
 }
     async function handleSave() {
@@ -186,7 +186,7 @@ function ProfileCard({ onboarding=false }: ProfileCardProps) {
 
             
 
-            <div className="mt-6">
+            <div className="mt-6 flex flex-col gap-6">
 
                 <Button
                     text={loading ? "Saving..." : "Save Changes"}
@@ -197,16 +197,15 @@ function ProfileCard({ onboarding=false }: ProfileCardProps) {
 
             </div>
             {onboarding && (
-
-                <Button
-
-                    text="Skip for now"
-
-                    onClick={handleSkip}
-
-                />
-
-            )}
+        <div className="mt-4 text-center">
+            <button
+                onClick={handleSkip}
+                className="text-sm font-medium text-slate-500 transition-colors hover:text-blue-600"
+            >
+                Skip for now
+            </button>
+        </div>
+    )}
 
         </div>
 

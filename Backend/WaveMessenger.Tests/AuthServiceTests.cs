@@ -6,6 +6,8 @@ using WaveMessenger.Domain.Entities;
 using WaveMessenger.Application.Services;
 using WaveMessenger.Application.Contracts.Auth;
 using Microsoft.AspNetCore.Mvc;
+using WaveMessenger.Application.Exceptions;
+using WaveMessenger.Application.Validators;
 
 namespace WaveMessenger.Tests;
 
@@ -129,6 +131,143 @@ public class AuthServiceTests
         await Assert.ThrowsAsync<UnauthorizedAccessException>(()=>_authService.LoginAsync(request));
 
     }
+    [Fact]
+    public async Task RegisterAsync_ShouldThrowConflict_WhenEmailAlreadyExists()
+    {
+       //Arrange
+       var request = new RegisterRequest
+       {
+            UserName = "ayesha",
+            Email = "string@exam.com",
+            
+            DisplayName = "Ayesha",
+            Password = "Pass123"
+        }; 
+        var fakeUser = new User
+        {
+            Id = Guid.Parse("11111111-1111-1111-1111-111111111111"),
+            Email = "string@exam.com",
+            UserName = "ayesha",
+            DisplayName = "Ayesha",
+            PasswordHash = "hashed-password",
+            HasCompletedProfile = true
+        };
+
+        _userRepository.Setup(x=>x.GetByEmailAsync(request.Email)).ReturnsAsync(fakeUser);
+        await Assert.ThrowsAsync<ConflictException>(() => _authService.RegisterAsync(request));
+        _userRepository.Verify(
+            x => x.GetByEmailAsync(request.Email),
+            Times.Once());
+
+        _userRepository.Verify(
+            x => x.GetByUserNameAsync(It.IsAny<string>()),
+            Times.Never());
+
+        _userRepository.Verify(
+            x => x.AddAsync(It.IsAny<User>()),
+            Times.Never());
+
+        _userRepository.Verify(
+            x => x.SaveChangesAsync(),
+            Times.Never());
+    }
+        [Fact]
+        public async Task RegisterAsync_ShouldThrowConflict_WhenuserAlreadyExists()
+    {
+        var request = new RegisterRequest
+       {
+            UserName = "ayesha",
+            Email = "string@exam.com",
+            
+            DisplayName = "Ayesha",
+            Password = "Pass123"
+        }; 
+        var fakeUser = new User
+        {
+            Id = Guid.Parse("11111111-1111-1111-1111-111111111111"),
+            Email = "string@exam.com",
+            UserName = "ayesha",
+            DisplayName = "Ayesha",
+            PasswordHash = "hashed-password",
+            HasCompletedProfile = true
+        };
+
+        _userRepository.Setup(x=>x.GetByEmailAsync(request.Email)).ReturnsAsync((User?)null);
+        _userRepository.Setup(x => x.GetByUserNameAsync(request.UserName))
+    .ReturnsAsync(fakeUser);
+        await Assert.ThrowsAsync<ConflictException>(() => _authService.RegisterAsync(request));
+        
+        _userRepository.Verify(
+            x => x.GetByEmailAsync(request.Email),
+            Times.Once());
+
+        _userRepository.Verify(
+            x => x.GetByUserNameAsync(It.IsAny<string>()),
+            Times.Once());
+
+        _userRepository.Verify(
+            x => x.AddAsync(It.IsAny<User>()),
+            Times.Never());
+
+        _userRepository.Verify(
+            x => x.SaveChangesAsync(),
+            Times.Never());
+    }
+    [Fact]
+         public async Task ResgisterAsync_ShouldReturnRegisterResponse_WhenCredentialsAreValid()
+    {
+        var request = new RegisterRequest
+       {
+            UserName = "ayesha",
+            Email = "string@exam.com",
+            
+            DisplayName = "Ayesha",
+            Password = "Pass123"
+        }; 
+        var fakeUser = new User
+        {
+            Id = Guid.Parse("11111111-1111-1111-1111-111111111111"),
+            Email = "string@exam.com",
+            UserName = "ayesha",
+            DisplayName = "Ayesha",
+            PasswordHash = "hashed-password",
+            HasCompletedProfile = true
+        };
+
+        _userRepository.Setup(x=>x.GetByEmailAsync(request.Email)).ReturnsAsync((User?)null);
+        _userRepository
+        .Setup(x => x.GetByUserNameAsync(request.UserName))
+        .ReturnsAsync((User?)null);
+        _passwordHasher
+    .Setup(x => x.HashPassword(
+        It.IsAny<User>(),
+        request.Password))
+    .Returns("hashed-password");
+        var response = await _authService.RegisterAsync(request);
+        Assert.NotNull(response);
+
+        Assert.Equal(request.Email, response.Email);
+
+        Assert.Equal(request.UserName, response.UserName);
+
+        Assert.Equal(request.DisplayName, response.DisplayName);
+        _userRepository.Verify(
+            x => x.GetByEmailAsync(request.Email),
+            Times.Once());
+
+        _userRepository.Verify(
+            x => x.GetByUserNameAsync(It.IsAny<string>()),
+            Times.Once());
+
+        _userRepository.Verify(
+            x => x.AddAsync(It.IsAny<User>()),
+            Times.Once());
+
+        _userRepository.Verify(
+            x => x.SaveChangesAsync(),
+            Times.Once());
+    }
+
     
     [Theory]
     [InlineData("")]
@@ -138,8 +277,22 @@ public class AuthServiceTests
     [InlineData("email@")]
     [InlineData("email.com")]
     [InlineData("@email.com")]
+    [InlineData(null)]
     public async Task Register_ShouldThrow_WhenEmailIsInvalid(string? email)
     {
-        
+        var validator = new RegisterRequestValidator();
+
+    var request = new RegisterRequest
+    {
+        Email = email!,
+        UserName = "ayesha",
+        DisplayName = "Ayesha",
+        Password = "Password123"
+    };
+
+    var result = validator.Validate(request);
+
+    Assert.False(result.IsValid);
     }
+
 }

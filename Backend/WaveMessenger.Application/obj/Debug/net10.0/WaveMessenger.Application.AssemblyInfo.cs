@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("WaveMessenger.Application")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+b91fe844ebd07a2a5ad2e877a63a9586e19be5aa")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+ca47710df613fe5ffecb61f89c0b68292cb76e13")]
 [assembly: System.Reflection.AssemblyProductAttribute("WaveMessenger.Application")]
 [assembly: System.Reflection.AssemblyTitleAttribute("WaveMessenger.Application")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

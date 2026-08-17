@@ -1,5 +1,9 @@
+// ChatPage.tsx
+
+import ChatLayout from "./ChatLayout";
+
 function ChatPage() {
-    return <h1>Chat Page</h1>;
+    return <ChatLayout />;
 }
 
 export default ChatPage;

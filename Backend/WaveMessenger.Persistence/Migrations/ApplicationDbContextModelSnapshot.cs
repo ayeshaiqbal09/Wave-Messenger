@@ -28,6 +28,9 @@ namespace WaveMessenger.Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+                    b.Property<string>("Bio")
+                        .HasColumnType("text");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
@@ -38,6 +41,9 @@ namespace WaveMessenger.Persistence.Migrations
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<bool>("HasCompletedProfile")
+                        .HasColumnType("boolean");
 
                     b.Property<bool>("IsOnline")
                         .HasColumnType("boolean");
@@ -50,6 +56,9 @@ namespace WaveMessenger.Persistence.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("ProfilePictureUrl")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Status")
                         .HasColumnType("text");
 
                     b.Property<string>("UserName")
