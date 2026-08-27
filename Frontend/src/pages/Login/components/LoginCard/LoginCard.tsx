@@ -39,7 +39,16 @@ function LoginCard() {
             });
             
 
-            login(response.token);
+            login(
+                {
+                    id: response.id,
+                    userName: response.userName,
+                    email: response.email,
+                    displayName: response.displayName,
+                    hasCompletedProfile: response.hasCompletedProfile
+                },
+                response.token
+            );
             
             if (!response.hasCompletedProfile) {
                 navigate("/complete-profile");

@@ -1,29 +1,30 @@
-import { contacts } from "../../../../data/contact";
 import type { Contact } from "../../../../types/user";
 import ContactItem from "./ContactItem";
-import { conversations } from "../../../../data/conversations";
 import type { Conversation } from "../../../../types/conversation";
 import type { Message } from "../../../../types/message";
-
+import { useAuth } from "../../../../hooks/useAuth";
 type ContactListProps = {
     selectedContact: Contact | null;
     onSelectContact: (contact: Contact) => void;
     conversations: Conversation[];
     messages: Message[];
-   
+    contacts: Contact[];
 };
 
 function ContactList({
     selectedContact,
     onSelectContact,
     conversations,
-    messages
+    messages,
+    contacts
 }: ContactListProps) {
+    const { currentUser } = useAuth();
+    console.log("ContactList currentUser:", currentUser);
     const contactData = contacts.map(contact => {
 
         const conversation = conversations.find(
             conversation =>
-                conversation.contactId === contact.id
+                conversation.otherUserId === contact.id
         );
 
         const conversationMessages = messages.filter(
@@ -37,8 +38,8 @@ function ContactList({
             ];
         const unreadCount = conversationMessages.filter(
     message =>
-        message.senderId !== "me" &&
-        message.status !== "read"
+        message.senderId !== currentUser?.id &&
+        message.status !== "Read"
 ).length;
 
         return {

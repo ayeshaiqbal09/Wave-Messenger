@@ -9,4 +9,6 @@ public interface IUserService
     Task<UpdateProfileResponse?> UpdateProfileAsync(
         Guid userId,
         UpdateProfileRequest request);
+    
+    Task<List<UserListResponse>> GetUsersAsync(Guid currentUserId);
 }

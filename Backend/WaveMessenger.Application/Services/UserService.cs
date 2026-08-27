@@ -29,7 +29,8 @@ public class UserService: IUserService
             Email = user.Email,
             Bio = user.Bio,
             Status = user.Status,
-            ProfilePictureUrl = user.ProfilePictureUrl
+            ProfilePictureUrl = user.ProfilePictureUrl,
+            HasCompletedProfile = user.HasCompletedProfile
         };
     }
 
@@ -60,5 +61,25 @@ public class UserService: IUserService
             Status = user.Status
         };
     }
+
+    public async Task<List<UserListResponse>> GetUsersAsync(
+    Guid currentUserId)
+        {
+            var users =
+                await _userRepository.GetUsersAsync(
+                    currentUserId);
+
+            return users.Select(user => new UserListResponse
+            {
+                Id = user.Id,
+                UserName = user.UserName,
+                DisplayName = user.DisplayName,
+                Bio = user.Bio,
+                Status = user.Status,
+                ProfilePictureUrl = user.ProfilePictureUrl,
+                IsOnline = user.IsOnline,
+                LastSeen = user.LastSeen
+            }).ToList();
+        }
     
 }

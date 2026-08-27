@@ -45,7 +45,7 @@ function ChatHeader({
                     </h2>
 
                     <p className="text-sm text-slate-500">
-                        {contact.online
+                        {contact.isOnline
                             ? "Online"
                             : contact.status}
                     </p>

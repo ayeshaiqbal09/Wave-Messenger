@@ -42,4 +42,12 @@ namespace WaveMessenger.Persistence.Repositories;
         {
             _context.Users.Update(user);
         }
+
+        public async Task<List<User>> GetUsersAsync(Guid userId)
+        {
+            return await _context.Users
+                .Where(user => user.Id != userId)
+                .OrderBy(user => user.DisplayName)
+                .ToListAsync();
+        }
     }

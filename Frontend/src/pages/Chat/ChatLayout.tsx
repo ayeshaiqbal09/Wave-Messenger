@@ -5,20 +5,27 @@ import ChatWindow from "./components/Chat/ChatWindow";
 import type { Message } from "../../types/message";
 import type { Conversation } from "../../types/conversation";
 import MessageNotification from "../../components/ui/MessageNotification";
-import { messages as initialMessages } from "../../data/messages";
-import { conversations as initialConversations } from "../../data/conversations";
-import { contacts } from "../../data/contact";
 import { playNotificationSound } from "../../types/notificationSound";
+import { useEffect, useRef } from "react";
+import chatConnection from "../../services/chatConnection";
+import { getUsers } from "../../services/userService";
+import { useAuth } from "../../hooks/useAuth";
+import { getConversations } from "../../services/conversationService";
 function ChatLayout() {
-
+    
+    const { currentUser } = useAuth();
+    const [contacts, setContacts] = useState<Contact[]>([]);
+    const contactsRef =
+    useRef<Contact[]>([]);
     const [selectedContact, setSelectedContact] =
         useState<Contact | null>(null);
-
+    const selectedContactRef =
+    useRef<Contact | null>(null);
     const [messages, setMessages] =
-        useState<Message[]>(initialMessages);
+        useState<Message[]>([]);
 
     const [conversations, setConversations] =
-        useState<Conversation[]>(initialConversations);
+    useState<Conversation[]>([]);
     type Notification = {
     id: string;
     contact: Contact;
@@ -26,57 +33,82 @@ function ChatLayout() {
 };
 
 const [notifications, setNotifications] = useState<Notification[]>([]);
+useEffect(() => {
+    async function loadConversations() {
+        try {
+            const data = await getConversations();
+
+            setConversations(data);
+        } catch (error) {
+            console.error(
+                "Failed to load conversations:",
+                error
+            );
+        }
+    }
+
+    loadConversations();
+}, []);
     
-function simulateIncomingMessage() {
 
-    const contact = contacts.find(
-        contact => contact.id === "2"
-    );
+useEffect(() => {
+    async function loadUsers() {
+        try {
+            const users = await getUsers();
+            const otherUsers = users.filter(
+    user => user.id !== currentUser?.id
+);
+           setContacts(otherUsers);
+contactsRef.current = otherUsers;
+        } catch (error) {
+            console.error(
+                "Failed to load users:",
+                error
+            );
+        }
+    }
 
-    if (!contact) {
+    loadUsers();
+}, []);
+function handleSelectContact(contact: Contact) {
+    selectedContactRef.current = contact;
+    setSelectedContact(contact);
+    const conversation =
+        conversations.find(
+            conversation =>
+                conversation.otherUserId === contact.id
+        );
+    
+    
+    if (!conversation) {
         return;
     }
 
-    const incomingMessage: Message = {
-        id: crypto.randomUUID(),
-        conversationId: contact.id,
-        text: "Hey! Are you free?",
-        senderId: contact.id,
-        sentAt: new Date().toISOString(),
-        status: selectedContact?.id === contact.id
-        ? "read"
-        : "delivered"
-    };
+    const unreadMessages =
+        messages.filter(
+            message =>
+                message.conversationId === conversation.id &&
+                message.senderId !== currentUser?.id &&
+                message.status !== "Read"
+        );
 
-    setMessages(prev => [
-        ...prev,
-        incomingMessage
-    ]);
+    unreadMessages.forEach(message => {
 
-    // Only show notification if this chat isn't currently open
-    if (selectedContact?.id !== contact.id) {
-    showNotification(
-        contact,
-        incomingMessage.text
-    );
-}
-}
-function handleSelectContact(contact: Contact) {
+        chatConnection
+            .invoke(
+                "MarkMessageAsRead",
+                message.id
+            )
+            .catch(error => {
+                console.error(
+                    "Failed to mark message as read:",
+                    error
+                );
+            });
 
-    setMessages(prev =>
-        prev.map(message =>
-            message.conversationId === contact.id &&
-            message.senderId !== "me" &&
-            message.status !== "read"
-                ? {
-                    ...message,
-                    status: "read"
-                }
-                : message
-        )
-    );
+    });
+    
 
-    setSelectedContact(contact);
 }
 function showNotification(
     contact: Contact,
@@ -112,6 +144,140 @@ function showNotification(
 
     }, 4000);
 }
+useEffect(() => {
+
+   function handleReceiveMessage(message: Message) {
+
+    console.log(
+        "SignalR received message:",
+        message
+    );
+
+    setMessages(prev => [
+        ...prev,
+        message
+    ]);
+
+    const isCurrentConversation =
+        selectedContactRef.current?.id ===
+        message.senderId;
+
+    // Always acknowledge delivery.
+    chatConnection
+        .invoke(
+            "MarkMessageAsDelivered",
+            message.id
+        )
+        .catch(error => {
+            console.error(
+                "Failed to mark message as delivered:",
+                error
+            );
+        });
+
+    if (isCurrentConversation) {
+
+        // User is already looking at this conversation.
+        // Mark the message as read.
+        chatConnection
+            .invoke(
+                "MarkMessageAsRead",
+                message.id
+            )
+            .catch(error => {
+                console.error(
+                    "Failed to mark message as read:",
+                    error
+                );
+            });
+
+        return;
+    }
+
+    // Conversation isn't open.
+    // Show notification instead.
+    const contact =
+    contactsRef.current.find(
+            contact =>
+                contact.id === message.senderId
+        );
+        console.log("Notification debug:", {
+    senderId: message.senderId,
+    contacts: contactsRef.current,
+    contactFound: contact,
+    selectedContact: selectedContactRef.current
+});
+
+    if (contact) {
+        console.log("SHOWING NOTIFICATION");
+        showNotification(
+            contact,
+            message.text
+        );
+    }
+    else {
+    console.log("NO CONTACT FOUND FOR NOTIFICATION");
+}
+}
+function handleMessageStatusUpdated(
+    message: Message
+) {
+    console.log(
+        "Message status updated:",
+        message
+    );
+
+    setMessages(prev =>
+        prev.map(existingMessage =>
+            existingMessage.id === message.id
+                ? message
+                : existingMessage
+        )
+    );
+}
+
+    chatConnection.on(
+        "ReceiveMessage",
+        handleReceiveMessage
+    );
+    chatConnection.on(
+    "MessageStatusUpdated",
+    handleMessageStatusUpdated
+);
+
+    async function startConnection() {
+        try {
+            if (chatConnection.state === "Disconnected") {
+                await chatConnection.start();
+
+                console.log(
+                    "SignalR connected:",
+                    chatConnection.connectionId
+                );
+            }
+        } catch (error) {
+            console.error(
+                "SignalR connection failed:",
+                error
+            );
+        }
+    }
+
+    startConnection();
+
+    return () => {
+    chatConnection.off(
+        "ReceiveMessage",
+        handleReceiveMessage
+    );
+
+    chatConnection.off(
+        "MessageStatusUpdated",
+        handleMessageStatusUpdated
+    );
+};
+
+}, []);
 
     return (
         <div className="
@@ -120,21 +286,51 @@ function showNotification(
     overflow-hidden
     bg-slate-100
 ">
-
+    {/* Sidebar */}
+        <div
+    className={
+        selectedContact
+            ? "hidden md:flex md:w-[350px] md:flex-shrink-0"
+            : "flex w-full md:w-[350px] md:flex-shrink-0"
+    }
+>
             <Sidebar
+                contacts={contacts}
                 conversations={conversations}
                 selectedContact={selectedContact}
                 onSelectContact={handleSelectContact}
                 messages={messages}
             />
-                
+ </div>   
+ {/* Chat */}
+<div
+    className={
+        selectedContact
+            ? "flex w-full flex-1"
+            : "hidden md:flex md:flex-1"
+    }
+>           
             <ChatWindow
                 selectedContact={selectedContact}
                 messages={messages}
                 onMessagesChange={setMessages}
-                setConversations={setConversations}
-                onBack={() => setSelectedContact(null)}
+                conversations={conversations}
+                currentUserId={currentUser?.id ?? ""}
+                onConversationCreated={(conversation) => {
+                    setConversations(prev => [
+                        ...prev,
+                        conversation
+                    ]);
+                }}
+                onBack={() => {
+    selectedContactRef.current = null;
+    setSelectedContact(null);
+}}
             />
+
+            </div> 
+
+
             <div className="
     fixed
     right-4
@@ -176,28 +372,7 @@ function showNotification(
         />
     ))}
 </div>
-            <button
-            onClick={simulateIncomingMessage}
-            className="
-                fixed
-                bottom-4
-                right-4
-                z-50
-                rounded-xl
-                bg-purple-600
-                px-4
-                py-2
-                text-sm
-                font-semibold
-                text-white
-                shadow-lg
-                transition
-                hover:bg-purple-700
-                active:scale-95
-            "
-        >
-            Simulate Message
-        </button>
+            
         </div>
     );
 }

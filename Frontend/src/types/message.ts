@@ -1,9 +1,9 @@
 export type MessageStatus =
-    | "sending"
-    | "sent"
-    | "delivered"
-    | "read"
-    | "undelivered";
+    | "Sending"
+    | "Sent"
+    | "Delivered"
+    | "Read"
+    | "Undelivered";
 
 export interface Message {
     id: string;

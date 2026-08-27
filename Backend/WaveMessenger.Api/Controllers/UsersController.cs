@@ -53,4 +53,24 @@ public class UsersController : ControllerBase
 
         return Ok(response);
     }
+
+    [Authorize]
+[HttpGet]
+public async Task<ActionResult<List<UserListResponse>>> GetUsers()
+{
+    var userIdClaim =
+        User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+    if (userIdClaim == null)
+    {
+        return Unauthorized();
+    }
+
+    var userId = Guid.Parse(userIdClaim);
+
+    var response =
+        await _userService.GetUsersAsync(userId);
+
+    return Ok(response);
+}
 }

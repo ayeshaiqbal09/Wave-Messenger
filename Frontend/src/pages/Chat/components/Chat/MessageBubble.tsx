@@ -61,26 +61,26 @@ function MessageBubble({
     </span>
 
     {isMine && (
-        <>
-            {message.status === "sent" && (
-                <Check className="h-3.5 w-3.5" />
-            )}
+    <>
+        {message.status === "Sent" && (
+            <Check className="h-3.5 w-3.5" />
+        )}
 
-            {message.status === "delivered" && (
-                <CheckCheck className="h-3.5 w-3.5" />
-            )}
+        {message.status === "Delivered" && (
+            <CheckCheck className="h-3.5 w-3.5 text-blue-100" />
+        )}
 
-            {message.status === "read" && (
-                <CheckCheck className="h-3.5 w-3.5 text-sky-200" />
-            )}
+        {message.status === "Read" && (
+            <i>seen</i>
+        )}
 
-            {message.status === "undelivered" && (
-                <span className="font-bold text-red-200">
-                    !
-                </span>
-            )}
-        </>
-    )}
+        {message.status === "Undelivered" && (
+            <span className="font-bold text-red-200">
+                !
+            </span>
+        )}
+    </>
+)}
 </div>
 
             </div>

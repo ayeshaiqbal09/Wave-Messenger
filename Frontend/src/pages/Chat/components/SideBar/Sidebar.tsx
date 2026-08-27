@@ -9,12 +9,14 @@ import type { Message } from "../../../../types/message";
 type SidebarProps = {
     selectedContact: Contact | null;
     onSelectContact: (contact: Contact) => void;
+    contacts: Contact[];
     conversations: Conversation[];
     messages: Message[];
 };
 function Sidebar({
     selectedContact,
     onSelectContact,
+    contacts,
     conversations,
     messages
 }: SidebarProps) {
@@ -38,6 +40,7 @@ function Sidebar({
             <ContactList
                 selectedContact={selectedContact}
                 onSelectContact={onSelectContact}
+                contacts={contacts}
                 conversations={conversations}
                 messages={messages}
             />

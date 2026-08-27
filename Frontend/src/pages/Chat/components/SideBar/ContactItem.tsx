@@ -109,7 +109,7 @@ function ContactItem({
     </div>
 
 </div>
-            {contact.online && (
+            {contact.isOnline && (
                 <span className="h-2.5 w-2.5 rounded-full bg-green-500" />
             )}
 

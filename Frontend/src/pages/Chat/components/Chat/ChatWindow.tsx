@@ -4,23 +4,78 @@ import MessageList from "./MessageList";
 import ChatHeader from "./ChatHeader";
 import MessageInput from "./MessageInput";
 import type { Message } from "../../../../types/message";
+import ChatBackground from "./ChatBackground";
 import type { Conversation } from "../../../../types/conversation";
-import ChatBackground from "./Chatbackground";
+import { useEffect } from "react";
+import { getMessages } from "../../../../services/messageService";
+import { sendMessage } from "../../../../services/messageService";
+import { createConversation } from "../../../../services/conversationService";
+
 type ChatWindowProps = {
     selectedContact: Contact | null;
     messages: Message[];
     onMessagesChange: React.Dispatch<React.SetStateAction<Message[]>>;
-    setConversations: React.Dispatch<React.SetStateAction<Conversation[]>>;
+    conversations: Conversation[];
+    currentUserId: string;
     onBack: () => void;
+    onConversationCreated: (conversation: Conversation) => void;
 };
 
 function ChatWindow({
     selectedContact,
     messages,
     onMessagesChange,
-    setConversations,
+    currentUserId,
+    conversations,
+    onConversationCreated,
     onBack
 }: ChatWindowProps) {
+
+    const conversation = selectedContact
+        ? conversations.find(
+            conversation =>
+                conversation.otherUserId === selectedContact.id
+        )
+        : undefined;
+
+    const conversationMessages = conversation
+    ? messages.filter(
+        message =>
+            message.conversationId === conversation.id
+    )
+    : [];
+    
+useEffect(() => {
+    if (!conversation) {
+        return;
+    }
+    const conversationId = conversation.id;
+    async function loadMessages() {
+        try {
+            const data = await getMessages(conversationId);
+
+            onMessagesChange(prev => {
+                const otherMessages = prev.filter(
+                    message =>
+                        message.conversationId !== conversationId
+                );
+
+                return [
+                    ...otherMessages,
+                    ...data
+                ];
+            });
+
+        } catch (error) {
+            console.error(
+                "Failed to load messages:",
+                error
+            );
+        }
+    }
+
+    loadMessages();
+}, [conversation?.id]);
 
     if (!selectedContact) {
         return (
@@ -83,11 +138,6 @@ function ChatWindow({
             </div>
         );
     }
-
-    const conversationMessages = messages.filter(
-        message =>
-            message.conversationId === selectedContact.id
-    );
     
 
     return (
@@ -135,7 +185,7 @@ function ChatWindow({
 
                 <MessageList
                     messages={conversationMessages}
-                    currentUserId="me"
+                    currentUserId={currentUserId}
                     contactName={selectedContact.displayName}
                 />
 
@@ -145,57 +195,36 @@ function ChatWindow({
 
         {/* Message input - fixed */}
         <MessageInput
-            onSend={(text) => {
+            onSend={async (text) => {
+            try {
+                let activeConversation = conversation;
 
-                const newMessage: Message = {
-                    id: crypto.randomUUID(),
-                    conversationId: selectedContact.id,
-                    text,
-                    senderId: "me",
-                    sentAt: new Date().toISOString(),
-                    status: "sent"
-                };
+                if (!activeConversation) {
+                    activeConversation =
+                        await createConversation(
+                            selectedContact.id
+                        );
+
+                    onConversationCreated(activeConversation);
+                }
+
+                const newMessage = await sendMessage({
+                    conversationId: activeConversation.id,
+                    text
+                });
 
                 onMessagesChange(prev => [
                     ...prev,
                     newMessage
                 ]);
 
-                setConversations(prev => {
-
-                    const existingConversation = prev.find(
-                        conversation =>
-                            conversation.contactId === selectedContact.id
-                    );
-
-                    if (!existingConversation) {
-
-                        return [
-                            ...prev,
-                            {
-                                id: crypto.randomUUID(),
-                                contactId: selectedContact.id,
-                                lastMessage: text,
-                                lastMessageAt: newMessage.sentAt,
-                                unreadCount: 0
-                            }
-                        ];
-
-                    }
-
-                    return prev.map(conversation =>
-                        conversation.contactId === selectedContact.id
-                            ? {
-                                ...conversation,
-                                lastMessage: text,
-                                lastMessageAt: newMessage.sentAt
-                            }
-                            : conversation
-                    );
-
-                });
-
-            }}
+            } catch (error) {
+                console.error(
+                    "Failed to send message:",
+                    error
+                );
+            }
+        }}
         />
 
     </div>

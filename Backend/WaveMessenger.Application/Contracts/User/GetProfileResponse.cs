@@ -15,4 +15,5 @@ public class GetProfileResponse
     public string? Status { get; set; }
 
     public string? ProfilePictureUrl { get; set; }
+    public bool HasCompletedProfile { get; set; }
 }
